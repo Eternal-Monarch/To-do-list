@@ -31,7 +31,8 @@ class _CounterAppState extends State<CounterApp> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Counter value is 5!'),
+              title: Text('Counter Alert!'),
+              content: Text('Counter value is 5!'),
               actions: [
                 TextButton(
                   child: Text('OK'),
