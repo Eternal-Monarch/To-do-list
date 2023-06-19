@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Counter App',
-      theme: ThemeData(primarySwatch: Colors.deepOrange),
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: CounterApp(),
     );
   }
@@ -62,6 +62,9 @@ class _CounterAppState extends State<CounterApp> {
 
   @override
   Widget build(BuildContext context) {
+    final double buttonWidth = MediaQuery.of(context).size.width * 0.4;
+    final double buttonHeight = MediaQuery.of(context).size.height * 0.1;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Counter App'),
@@ -84,13 +87,36 @@ class _CounterAppState extends State<CounterApp> {
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          FloatingActionButton(
-            onPressed: _incrementCounter,
-            child: Icon(Icons.add),
+          Container(
+            width: buttonWidth,
+            height: buttonHeight,
+            decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              color: Colors.orange,
+            ),
+            child: IconButton(
+              onPressed: _incrementCounter,
+              icon: Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+            ),
           ),
-          FloatingActionButton(
-            onPressed: _decrementCounter,
-            child: Icon(Icons.remove),
+          SizedBox(width: 16),
+          Container(
+            width: buttonWidth * 0.7,
+            height: buttonHeight * 0.7,
+            decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              color: Colors.blue[900],
+            ),
+            child: IconButton(
+              onPressed: _decrementCounter,
+              icon: Icon(
+                Icons.remove,
+                color: Colors.white,
+              ),
+            ),
           ),
         ],
       ),
