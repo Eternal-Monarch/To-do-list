@@ -57,12 +57,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
               SizedBox(height: 8.0),
               Text(tasks[index].description),
               SizedBox(height: 8.0),
-              Text(
-                'Deadline: ${tasks[index].deadline}',
-                style: TextStyle(
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
+              Text('Days Required: ${tasks[index].daysRequired}'),
               SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () {
@@ -84,7 +79,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
       builder: (BuildContext context) {
         String title = '';
         String description = '';
-        DateTime deadline = DateTime.now();
+        int daysRequired = 0;
 
         return AlertDialog(
           title: Text('Add New Task'),
@@ -103,30 +98,11 @@ class _TaskListScreenState extends State<TaskListScreen> {
                 },
                 decoration: InputDecoration(labelText: 'Description'),
               ),
-              SizedBox(height: 8.0),
-              Text('Deadline:'),
-              SizedBox(height: 4.0),
-              InkWell(
-                onTap: () async {
-                  final DateTime? selectedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2100),
-                  );
-                  if (selectedDate != null) {
-                    setState(() {
-                      deadline = selectedDate;
-                    });
-                  }
+              TextField(
+                onChanged: (value) {
+                  daysRequired = int.tryParse(value) ?? 0;
                 },
-                child: Text(
-                  '${deadline.year}-${deadline.month}-${deadline.day}',
-                  style: TextStyle(
-                    color: Colors.deepOrange,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
+                decoration: InputDecoration(labelText: 'Days Required'),
               ),
             ],
           ),
@@ -139,7 +115,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                Task newTask = Task(title, description, deadline);
+                Task newTask = Task(title, description, daysRequired);
                 addTask(newTask);
                 Navigator.pop(context);
               },
@@ -155,16 +131,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true, // Center aligns the title
-        title: Center(
-        child: Text(
-        'Task Management',
-        style: TextStyle(
-        fontWeight: FontWeight.bold,
-        fontSize: 20.0,
-    ),
-    ),
-      ),
+        title: Text('Task Management'),
+        centerTitle: true,
       ),
       body: ListView.builder(
         itemCount: tasks.length,
@@ -208,7 +176,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
 class Task {
   String title;
   String description;
-  DateTime deadline;
+  int daysRequired;
 
-  Task(this.title, this.description, this.deadline);
+  Task(this.title, this.description, this.daysRequired);
 }
