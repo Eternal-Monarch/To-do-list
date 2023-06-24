@@ -47,17 +47,45 @@ class _TaskListScreenState extends State<TaskListScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                tasks[index].title,
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.deepOrange,
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  tasks[index].title,
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
               SizedBox(height: 8.0),
-              Text(tasks[index].description),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.deepOrange.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  tasks[index].description,
+                  style: TextStyle(fontSize: 16.0),
+                ),
+              ),
               SizedBox(height: 8.0),
-              Text('Days Required: ${tasks[index].daysRequired}'),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.deepOrange.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  'Days Required: ${tasks[index].daysRequired}',
+                  style: TextStyle(fontSize: 16.0),
+                ),
+              ),
               SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () {
@@ -90,19 +118,36 @@ class _TaskListScreenState extends State<TaskListScreen> {
                 onChanged: (value) {
                   title = value;
                 },
-                decoration: InputDecoration(labelText: 'Title'),
+                decoration: InputDecoration(
+                  labelText: 'Title',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
               ),
+              SizedBox(height: 8.0),
               TextField(
                 onChanged: (value) {
                   description = value;
                 },
-                decoration: InputDecoration(labelText: 'Description'),
+                decoration: InputDecoration(
+                  labelText: 'Description',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
               ),
+              SizedBox(height: 8.0),
               TextField(
                 onChanged: (value) {
                   daysRequired = int.tryParse(value) ?? 0;
                 },
-                decoration: InputDecoration(labelText: 'Days Required'),
+                decoration: InputDecoration(
+                  labelText: 'Days Required',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
               ),
             ],
           ),
@@ -132,7 +177,6 @@ class _TaskListScreenState extends State<TaskListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Task Management'),
-        centerTitle: true,
       ),
       body: ListView.builder(
         itemCount: tasks.length,
