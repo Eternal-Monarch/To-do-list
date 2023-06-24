@@ -1,143 +1,205 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(TaskManagementApp());
 }
 
-class MyApp extends StatelessWidget {
+class TaskManagementApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Counter App',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: CounterApp(),
+      title: 'Task Management',
+      theme: ThemeData(
+        primarySwatch: Colors.deepOrange,
+      ),
+      home: TaskListScreen(),
     );
   }
 }
 
-class CounterApp extends StatefulWidget {
+class TaskListScreen extends StatefulWidget {
   @override
-  _CounterAppState createState() => _CounterAppState();
+  _TaskListScreenState createState() => _TaskListScreenState();
 }
 
-class _CounterAppState extends State<CounterApp> {
-  int _counter = 0;
+class _TaskListScreenState extends State<TaskListScreen> {
+  List<Task> tasks = [];
 
-  void _incrementCounter() {
+  void addTask(Task newTask) {
     setState(() {
-      _counter++;
-      if (_counter == 5) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Counter Alert!'),
-              content: Text('Counter value is 5!'),
-              actions: [
-                TextButton(
-                  child: Text('OK'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
+      tasks.add(newTask);
+    });
+  }
+
+  void deleteTask(int index) {
+    setState(() {
+      tasks.removeAt(index);
+    });
+  }
+
+  void openTaskDetails(int index) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                tasks[index].title,
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
-            );
-          },
-        );
-      } else if (_counter == 10) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SecondScreen(),
+              ),
+              SizedBox(height: 8.0),
+              Text(tasks[index].description),
+              SizedBox(height: 8.0),
+              Text(
+                'Deadline: ${tasks[index].deadline}',
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+              SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: () {
+                  deleteTask(index);
+                  Navigator.pop(context);
+                },
+                child: Text('Delete Task'),
+              ),
+            ],
           ),
         );
-      }
-    });
+      },
+    );
   }
 
-  void _decrementCounter() {
-    setState(() {
-      _counter--;
-    });
-  }
+  void openAddTaskDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String title = '';
+        String description = '';
+        DateTime deadline = DateTime.now();
 
-  @override
-  Widget build(BuildContext context) {
-    final double buttonWidth = MediaQuery.of(context).size.width * 0.4;
-    final double buttonHeight = MediaQuery.of(context).size.height * 0.1;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Counter App'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Counter value:',
-              style: TextStyle(fontSize: 24),
+        return AlertDialog(
+          title: Text('Add New Task'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                onChanged: (value) {
+                  title = value;
+                },
+                decoration: InputDecoration(labelText: 'Title'),
+              ),
+              TextField(
+                onChanged: (value) {
+                  description = value;
+                },
+                decoration: InputDecoration(labelText: 'Description'),
+              ),
+              SizedBox(height: 8.0),
+              Text('Deadline:'),
+              SizedBox(height: 4.0),
+              InkWell(
+                onTap: () async {
+                  final DateTime? selectedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2100),
+                  );
+                  if (selectedDate != null) {
+                    setState(() {
+                      deadline = selectedDate;
+                    });
+                  }
+                },
+                child: Text(
+                  '${deadline.year}-${deadline.month}-${deadline.day}',
+                  style: TextStyle(
+                    color: Colors.deepOrange,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Cancel'),
             ),
-            Text(
-              '$_counter',
-              style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+            ElevatedButton(
+              onPressed: () {
+                Task newTask = Task(title, description, deadline);
+                addTask(newTask);
+                Navigator.pop(context);
+              },
+              child: Text('Save'),
             ),
           ],
-        ),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Task Management'),
       ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Container(
-            width: buttonWidth,
-            height: buttonHeight,
+      body: ListView.builder(
+        itemCount: tasks.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Container(
+            margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            padding: EdgeInsets.all(16.0),
             decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              color: Colors.orange,
-            ),
-            child: IconButton(
-              onPressed: _incrementCounter,
-              icon: Icon(
-                Icons.add,
-                color: Colors.white,
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8.0),
+              border: Border.all(
+                color: Colors.deepOrange,
+                width: 2.0,
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.3),
+                  blurRadius: 3.0,
+                  offset: Offset(0, 2),
+                ),
+              ],
             ),
-          ),
-          SizedBox(width: 16),
-          Container(
-            width: buttonWidth * 0.7,
-            height: buttonHeight * 0.7,
-            decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              color: Colors.blue[900],
+            child: ListTile(
+              title: Text(tasks[index].title),
+              subtitle: Text(tasks[index].description),
+              onTap: () {
+                openTaskDetails(index);
+              },
             ),
-            child: IconButton(
-              onPressed: _decrementCounter,
-              icon: Icon(
-                Icons.remove,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ],
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: openAddTaskDialog,
+        child: Icon(Icons.add),
       ),
     );
   }
 }
 
-class SecondScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Second Screen'),
-      ),
-      body: Center(
-        child: Text(
-          'Congratulations! You reached 10!',
-          style: TextStyle(fontSize: 24),
-        ),
-      ),
-    );
-  }
+class Task {
+  String title;
+  String description;
+  DateTime deadline;
+
+  Task(this.title, this.description, this.deadline);
 }
