@@ -155,7 +155,16 @@ class _TaskListScreenState extends State<TaskListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Task Management'),
+        centerTitle: true, // Center aligns the title
+        title: Center(
+        child: Text(
+        'Task Management',
+        style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 20.0,
+    ),
+    ),
+      ),
       ),
       body: ListView.builder(
         itemCount: tasks.length,
